@@ -24,27 +24,24 @@ with open('supporting_material_en.html','r', encoding='utf-8') as f3:
 with open('supporting_material_ar.html','r', encoding='utf-8') as f4:
     supporting_ar = f4.read()
 
-with open('Error.html','r', encoding='utf-8') as f13:
-    Error = f13.read()
-
 #style.css
-with open('main.css','r', encoding='utf-8') as f6:
-    css = f6.read()
+with open('main.css','r', encoding='utf-8') as f5:
+    css = f5.read()
 #all the used images
-with open('./images/background.png', 'rb') as f7:
-    background=f7.read()
-with open('./images/background2.png', 'rb') as f8:
-    background2 = f8.read()
-with open('./images/http.jpg', 'rb') as f9:
-    http = f9.read()
-with open('./images/Mohammed.png', 'rb') as f10:
-    Mohammed = f10.read()
-with open('./images/Mohammad.png', 'rb') as f11:
-    Mohammad = f11.read()
-with open('./images/Raseel.png', 'rb') as f12:
-    Raseel = f12.read()
-with open('countdown.mp4','rb') as f13:
-    countdown = f13.read()
+with open('./images/background.png', 'rb') as f6:
+    background=f6.read()
+with open('./images/background2.png', 'rb') as f7:
+    background2 = f7.read()
+with open('./images/http.jpg', 'rb') as f8:
+    http = f8.read()
+with open('./images/Mohammed.png', 'rb') as f9:
+    Mohammed = f9.read()
+with open('./images/Mohammad.png', 'rb') as f10:
+    Mohammad = f10.read()
+with open('./images/Raseel.png', 'rb') as f11:
+    Raseel = f11.read()
+with open('countdown.mp4','rb') as f12:
+    countdown = f12.read()
 while True:
     #accept the connection
     connectionSocket, addr = serverSocket.accept()
