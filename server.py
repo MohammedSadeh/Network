@@ -43,6 +43,8 @@ with open('./images/Mohammad.png', 'rb') as f11:
     Mohammad = f11.read()
 with open('./images/Raseel.png', 'rb') as f12:
     Raseel = f12.read()
+with open('countdown.mp4','rb') as f13:
+    countdown = f13.read()
 while True:
     #accept the connection
     connectionSocket, addr = serverSocket.accept()
@@ -58,7 +60,7 @@ while True:
     print("The Request is : "+request) # print http request intermanel
     print(sentence)
 
-    #for any of this we handle the request depinding on the url
+    #for any of this we handle the request depending on the url
     #for the base mian_en.gtml file :
     if(request =="/" or request =="/index.html" or request =="/main_en.html" or request =="/en"):
         connectionSocket.send("HTTP/1.1 200 OK\r\n".encode())
@@ -91,10 +93,11 @@ while True:
         connectionSocket.send("\r\n".encode())
         connectionSocket.send(css.encode())
 
-    #if this statment(/request_handler?material) in the url then the user submit a img name in the html form
+    #if this statment(/request_handler?material) in the url then the user submit an img name in the html form
     elif 'request_handler?material' in request :
         var,type = request.split('=')[1], request.split('=')[2] #to get the image name alone
         object = var.split('&')[0]
+        #if the requested file is image
         if (type == 'image'):
             images=['background','background2','mohammad','raseel','mohammed','http']
             images_h = [background, background2, Mohammad, Raseel, Mohammed, http]
@@ -118,7 +121,28 @@ while True:
                 location = "Location:http://www.google.com/search?q="+object+"&udm=2\r\n"
                 connectionSocket.send(location.encode())
                 connectionSocket.send('\r\n'.encode())
-                print("Redirect to google\r\n")
+                print("Redirect to google\r\n") 
+        
+        #if the requested file is video    
+        elif (type == 'video'):
+            video_name = 'countdown'
+            video_file = countdown  
+            object = object.lower()
+
+            if object == video_name:
+                connectionSocket.send("HTTP/1.1 200 OK\r\n".encode())
+                connectionSocket.send("Content-Type: video/mp4;\r\n".encode()) 
+                connectionSocket.send("\r\n".encode())
+                connectionSocket.send(video_file) 
+            else:
+                connectionSocket.send("HTTP/1.1 307 Temporary Redirect\r\n".encode())
+                connectionSocket.send('Content-Type: text/html; charset=utf-8\r\n'.encode())
+                location = "Location:https://www.youtube.com/results?search_query=" + object + "\r\n"
+                connectionSocket.send(location.encode())
+                connectionSocket.send('\r\n'.encode())
+                print("Redirect to YouTube\r\n")
+
+
 
 
         # with open(str(img1),'rb') as anyImg : # open the img
@@ -147,12 +171,13 @@ while True:
         connectionSocket.send("Content-Type: image/png;\r\n".encode())
         connectionSocket.send("\r\n".encode())
         connectionSocket.send(background2)
-    #our imgs in the both pages (en,ar)
+    #http image in both pages
     elif (request =="/images/http.jpg"):
         connectionSocket.send("HTTP/1.1 200 OK\r\n".encode())
         connectionSocket.send("Content-Type: image/jpg;\r\n".encode())
         connectionSocket.send("\r\n".encode())
         connectionSocket.send(http)
+    #our imgs in the both pages (en,ar)
     elif (request =="/images/Mohammed.png"):
         connectionSocket.send("HTTP/1.1 200 OK\r\n".encode())
         connectionSocket.send("Content-Type: image/png;\r\n".encode())
@@ -163,16 +188,34 @@ while True:
         connectionSocket.send("Content-Type: image/png;\r\n".encode())
         connectionSocket.send("\r\n".encode())
         connectionSocket.send(Raseel)
-    #for main_ar.html page
     elif(request == "/images/Mohammad.png"):
         connectionSocket.send("HTTP/1.1 200 OK\r\n".encode())
         connectionSocket.send("Content-Type: image/png; charset=utf-8\r\n".encode())
         connectionSocket.send("\r\n".encode())
         connectionSocket.send(Mohammad)
 
-    #if the client made any request that dose not exisits
+    #if the client made any request that dose not exist
     else:
         connectionSocket.send("HTTP/1.1 404 Not Found\r\n".encode())
         connectionSocket.send("Content-Type: text/html; charset=utf-8\r\n".encode())
         connectionSocket.send("\r\n".encode())
-        connectionSocket.send(Error.encode())
+        #connectionSocket.send(Error.encode())
+        error = ('<!DOCTYPE html>'
+                '<html lang="en">'
+                '<style>'
+                '*{text-align: center;padding:10px;}'
+                'h1{font-size:50px;}'
+                'p{font-size:20px;}'
+                '</style>'
+                '<head>'
+                '<meta charset="UTF-8">'
+                '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+                '<title>Error 404</title>'
+                '</head>'
+                '<body>'
+                '<h1 style="color: red;">The file is not found!</h1>'
+                '<p>IP Address: ' + str(ip) + ',Port Number: ' + str(port) + '</p>'
+                '</body></html>'
+        )
+        connectionSocket.send(error.encode())
+    connectionSocket.close()
